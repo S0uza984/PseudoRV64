@@ -41,11 +41,9 @@ class Selector:
             seen.add(id(node))
             for child in children(node): visit(child)
             for rule in self.rules:
-                from ast_nodes import BinaryExpr, BinaryOperator
-                if rule.name == "sub_imm":
-                    subs = ((node.left, REG),) if isinstance(node, BinaryExpr) and node.operator is BinaryOperator.SUBTRACT and neg_imm12(node.right) else None
-                else:
-                    subs=self._match(node,rule.pattern)
+                # Todas as regras, inclusive padrões aninhados como sub_imm,
+                # são reconhecidas pela mesma rotina declarativa.
+                subs=self._match(node,rule.pattern)
                 if subs is None: continue
                 cost=rule.cost
                 valid=True

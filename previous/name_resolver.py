@@ -31,6 +31,17 @@ def resolve_names(program: Program) -> None:
 
     # 1. Colete todas as assinaturas de função.
     for function in program.functions:
+        # Cada declaração recebe seu próprio símbolo na AST. Em caso de
+        # duplicidade, porém, o símbolo global continua sendo o da primeira.
+        symbol = FunctionSymbol(
+            name=function.name,
+            kind=SymbolKind.FUNCTION,
+            type=function.return_type,
+            declaration=function,
+            parameter_types=tuple(param.type for param in function.parameters),
+        )
+        function.metadata["symbol"] = symbol
+
         if function.name in functions:
             diagnostics.append(SemanticDiagnostic(
                 SemanticErrorKind.DUPLICATE_FUNCTION,
@@ -39,13 +50,7 @@ def resolve_names(program: Program) -> None:
             ))
             continue
 
-        functions[function.name] = FunctionSymbol(
-            name=function.name,
-            kind=SymbolKind.FUNCTION,
-            type=function.return_type,
-            declaration=function,
-            parameter_types=tuple(param.type for param in function.parameters),
-        )
+        functions[function.name] = symbol
 
     # 2. Valide a existência e a assinatura de main.
     main = functions.get("main")
