@@ -78,7 +78,7 @@ class _TypeChecker:
             else:
                 actual = self.visit_expr(stmt.value)
                 if self.function.return_type is TypeName.VOID:
-                    self.error(SemanticErrorKind.RETURN_MISMATCH, stmt.value, "funcao void nao pode retornar um valor")
+                    self.error(SemanticErrorKind.RETURN_MISMATCH, stmt, "funcao void nao pode retornar um valor")
                 elif actual is not _UNKNOWN and actual is not self.function.return_type:
                     self.error(SemanticErrorKind.RETURN_MISMATCH, stmt.value, f"retorno incompativel: esperado {self.function.return_type.value}, encontrado {actual.value}")
             return
