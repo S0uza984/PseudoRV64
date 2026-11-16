@@ -54,9 +54,12 @@ class CodeGenerator:
             n,rc=sub[i]
             return self._emit_expr(n,c or rc,tt,ff)
         o=node.span
-        if rule in ("literal_reg","bool_reg"):
+        if rule in ("literal_reg","negative_reg","bool_reg"):
             v=self.context.temp()
-            value=int(node.value) if isinstance(node.value,bool) else node.value
+            if rule == "negative_reg":
+                value = -node.operand.value
+            else:
+                value=int(node.value) if isinstance(node.value,bool) else node.value
             self.context.emit(I.Li(v,value,origin=o)); return v
         if rule=="identifier_reg":
             return self.context.variable(node.metadata["symbol"])
